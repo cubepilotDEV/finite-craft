@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finite Craft</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ff8228;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+            font-size: 1.5em;
+            overflow-x: hidden;
+        }
+
+        .message {
+            font-size: 2em;
+            margin: 40px;
+            padding: 20px;
+            background-color: #83c8d2;
+            border-radius: 8px;
+        }
+
+        p {
+            font-size: 4em;
+            line-height: 1.2;
+            text-shadow: 5px 5px 10px #000;
+            margin: 20px 0;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        input {
+            padding: 40px;
+            font-size: 2em;
+            margin: 30px;
+            border-radius: 5px;
+            border: none;
+            width: 60%;
+        }
+
+        button {
+            padding: 60px 120px;
+            font-size: 2.5em;
+            background-color: #5c696b;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: white;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #00deff;
+        }
+
+        .history {
+            margin-top: 30px;
+            padding: 30px;
+            background-color: #83c8d2;
+            border-radius: 8px;
+            font-size: 2em;
+            color: black;
+            max-height: 300px;
+            overflow-y: scroll;
+        }
+
+        .scary-face {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: auto;
+            z-index: 9999;
+            display: none;
+        }
+
+        .flashing-text {
+            font-size: 7em;
+            color: red;
+            font-weight: bold;
+            display: none;
+            text-shadow: 0 0 20px red;
+            position: fixed;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 9999;
+        }
+
+        .banner {
+            width: 100%;
+            max-width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        @keyframes shake {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            25% { transform: translateX(-50%) rotate(15deg); }
+            50% { transform: translateX(-50%) rotate(0deg); }
+            75% { transform: translateX(-50%) rotate(-15deg); }
+            100% { transform: translateX(-50%) rotate(0deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <img src="https://images-ext-1.discordapp.net/external/nRExYArDvR-9EUlUfExYN2tks3LS02JQXCF1z_p2XWo/https/i.ibb.co/8DDvX7DT/Untitled117-20250315103531.png?format=webp&quality=lossless&width=1806&height=722" alt="Banner" class="banner" />
+
+    <p>Welcome to Finite Craft!</br>Combine any two items below to make a new item ;]</p>
+
+    <div class="input-container">
+        <input type="text" id="item1" placeholder="Enter first item" />
+        <input type="text" id="item2" placeholder="Enter second item" />
+        <button onclick="craft()">Craft</button>
+    </div>
+
+    <div id="result" class="message"></div>
+
+    <div class="history" id="history">
+        <strong>Previously Crafted Items:</strong>
+        <ul id="craftedItemsList"></ul>
+    </div>
+
+    <img id="scaryFace" class="scary-face" src="https://onepoundcrisps.com/wp-content/uploads/2023/06/wotsits-vs-cheetos.jpg" alt="Scary Face" />
+    <div id="flashingText" class="flashing-text">WOTSIT JUMPSCARE</div>
+
+    <script>
+        let craftedItems = [];
+
+
+        const klaxonSound = new Audio('https://freesound.org/data/previews/372/372707_5128794-lq.mp3');
+
+        function craft() {
+            const item1 = document.getElementById('item1').value.trim().toLowerCase();
+            const item2 = document.getElementById('item2').value.trim().toLowerCase();
+
+            if (!item1 || !item2) {
+                alert("Please enter two valid items!");
+                return;
+            }
+
+            const color = getRandomColor();
+            const craftedItem = `Orange ${capitalizeFirstLetter(item1)} ${capitalizeFirstLetter(item2)}`;
+
+            craftedItems.push(craftedItem);
+
+            document.getElementById('result').innerHTML = `
+                <strong>You crafted:</strong><br />
+                <span style="color: ${color}">Orange</span> ${capitalizeFirstLetter(item1)} ${capitalizeFirstLetter(item2)}<br />
+                <strong>Total orange items crafted: ${craftedItems.length}</strong>
+            `;
+
+            updateCraftedItemsHistory();
+
+            document.getElementById('item1').value = '';
+            document.getElementById('item2').value = '';
+        }
+
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function updateCraftedItemsHistory() {
+            const historyList = document.getElementById('craftedItemsList');
+            historyList.innerHTML = '';
+            craftedItems.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = item;
+                historyList.appendChild(li);
+            });
+        }
+
+
+        function showRandomJumpscare() {
+            const randomChance = Math.random(); 
+
+
+            if (randomChance <= 0.25) {
+                const scaryFace = document.getElementById('scaryFace');
+                const flashingText = document.getElementById('flashingText');
+
+
+                klaxonSound.play();
+
+
+                scaryFace.style.display = 'block';
+                flashingText.style.display = 'block';
+
+
+                let isVisible = true;
+                const flashInterval = setInterval(() => {
+                    if (isVisible) {
+                        flashingText.style.opacity = 0;
+                    } else {
+                        flashingText.style.opacity = 1;
+                    }
+                    isVisible = !isVisible;
+                }, 500);
+                
+                setTimeout(() => {
+                    clearInterval(flashInterval); 
+                    flashingText.style.display = 'none';
+                    scaryFace.style.display = 'none';
+                }, 3000); 
+            }
+        }
+
+ 
+        setInterval(showRandomJumpscare, 5000);
+    </script>
+
+</body>
+</html>
